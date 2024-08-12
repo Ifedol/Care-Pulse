@@ -27,7 +27,7 @@ const Login = () => {
         <div className="pl-[110px] ">
           <img src={Logo} alt="" className="pt-[40px]" />
           <div className="pt-[70px]">
-            <h1 className=" text-white font-bold text-2xl  ">Hi there, ....</h1>
+            <h1 className=" text-white font-bold text-2xl  ">Hi sdfsfsfsfsdfthere, ....</h1>
             <p className="text-[#ABB8C4] text-2">
               Get Started with Appointments.
             </p>
