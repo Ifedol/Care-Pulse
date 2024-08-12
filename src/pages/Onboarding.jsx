@@ -7,20 +7,51 @@ import IconCa from "../assets/calender.png";
 import Select from "react-select";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FileUploader } from "react-drag-drop-files";
 
 const options = [
-  { value: "Male", label: "Male" },
-  { value: "Female", label: "Female" },
-  { value: "Other", label: "Other" },
+  { value: "Dr. Sarah Safari", label: "Dr. Sarah Safari" },
+  { value: "Dr. Ava Williams", label: "Dr. Ava Williams" },
+  { value: "Dr. Adam Smith", label: "Dr. Adam Smith" },
 ];
+const fileTypes = ["JPG", "PNG", "GIF"];
 
 const Onboarding = () => {
   const [selectedOption, setSelectedOption] = useState(null);
+  const [file, setFile] = useState(null);
+  const [checkboxes, setCheckboxes] = useState({
+    consentTreatment: false,
+    consentInfo: false,
+    agreePrivacyPolicy: false,
+  });
+
   const navigate = useNavigate();
 
-  const handleVerify = () => {
-    navigate("/appointment");
+  const handleChange = (file) => {
+    setFile(file);
   };
+
+  const handleCheckboxChange = (event) => {
+    const { name, checked } = event.target;
+    setCheckboxes((prevState) => ({
+      ...prevState,
+      [name]: checked,
+    }));
+  };
+
+  const canSubmit =
+    Object.values(checkboxes).filter((checked) => checked).length >= 2;
+
+  const handleVerify = () => {
+    if (canSubmit) {
+      // Handle the form submission
+      console.log("Form submitted!");
+      navigate("/appointment");
+    } else {
+      console.log("Please check at least two checkboxes before submitting.");
+    }
+  };
+
   return (
     <div className="relative">
       <div className="bg-black w-full h-[2480px] flex">
@@ -88,12 +119,46 @@ const Onboarding = () => {
                   />
                 </div>
               </label>
+              <label className="w-[117px] pt-[20px] flex gap-[8px] flex-col">
+                <p className="text-[#ABB8C4] font-normal">Gender </p>
+                <div className="flex justify-between">
+                  <div className="flex gap-4 w-full border-[#363A3D] p-2 rounded-lg border  ">
+                    <label className="mt-[2px]">
+                      <input
+                        required={true}
+                        type="checkbox"
+                        className="outline-none   text-white bg-[#ffffff00] "
+                        placeholder=""
+                      />
+                    </label>
+                    <p>Male</p>
+                  </div>
 
-              <Select
-                defaultValue={selectedOption}
-                onChange={setSelectedOption}
-                options={options}
-              />
+                  <div className="flex gap-4 w-full border-[#363A3D] p-2 rounded-lg border ml- ">
+                    <label className="mt-[2px]">
+                      <input
+                        required={true}
+                        type="checkbox"
+                        className="outline-none   text-white bg-[#ffffff00] "
+                        placeholder=""
+                      />
+                    </label>
+                    <p>Female</p>
+                  </div>
+
+                  <div className="flex gap-4 w-full border-[#363A3D] p-2 rounded-lg border ">
+                    <label className="mt-[2px]">
+                      <input
+                        required={true}
+                        type="checkbox"
+                        className="outline-none   text-white bg-[#ffffff00] "
+                        placeholder=""
+                      />
+                    </label>
+                    <p>Other</p>
+                  </div>
+                </div>
+              </label>
             </div>
 
             <div className="flex gap-[18px]">
@@ -158,11 +223,16 @@ const Onboarding = () => {
                 Primary care physician{" "}
               </p>
               <div className="w-[860px] border-[#363A3D] p-2 rounded-lg border gap-[8px] flex items-center">
-                <input
+                {/*<input
                   required={true}
                   type="text"
                   className="outline-none  text-white bg-[#ffffff00] "
                   placeholder="ex: Adam"
+                /> */}
+                <Select
+                  defaultValue={selectedOption}
+                  onChange={setSelectedOption}
+                  options={options}
                 />
               </div>
             </label>
@@ -282,16 +352,16 @@ const Onboarding = () => {
                 />
               </div>
             </label>
-            <label className="w-[496px] pt-[40px] flex gap-[8px] flex-col">
+            <label className="w-[860px]  pt-[40px] flex gap-[8px] flex-col">
               <p className="text-[#ABB8C4] font-normal">
                 Scanned Copy of Identification Document
               </p>
-              <div className="w-[860px] h-[134px] border-[#363A3D] p-2 rounded-lg border gap-[8px] flex items-center">
-                <input
-                  required={true}
-                  type="text"
-                  className="outline-none text-center  text-white bg-[#ffffff00] "
-                  placeholder=""
+              <div className=" w-full h-[134px] items-center  border  border-dashed border-blue-700 rounded-sm flex justify-center ">
+                <FileUploader
+                  handleChange={handleChange}
+                  name="file"
+                  types={fileTypes}
+                  classes="   items-center justify-center"
                 />
               </div>
             </label>
@@ -304,11 +374,13 @@ const Onboarding = () => {
                 <input
                   required={true}
                   type="checkbox"
-                  className="outline-none   text-white bg-[#ffffff00] "
-                  placeholder=""
+                  name="consentTreatment"
+                  checked={checkboxes.consentTreatment}
+                  onChange={handleCheckboxChange}
+                  className="outline-none text-white bg-[#ffffff00]"
                 />
               </label>
-              <p className="text-[#32363b]">
+              <p className="text-[#ABB8C4]">
                 I consent to receive treatment for my health condition.
               </p>
             </div>
@@ -317,11 +389,13 @@ const Onboarding = () => {
                 <input
                   required={true}
                   type="checkbox"
-                  className="outline-none   text-white bg-[#ffffff00] "
-                  placeholder=""
+                  name="consentInfo"
+                  checked={checkboxes.consentInfo}
+                  onChange={handleCheckboxChange}
+                  className="outline-none text-white bg-[#ffffff00]"
                 />
               </label>
-              <p className="text-[#32363b]">
+              <p className="text-[#ABB8C4]">
                 I consent to the use and disclosure of my health information for
                 treatment purposes.
               </p>
@@ -331,24 +405,35 @@ const Onboarding = () => {
                 <input
                   required={true}
                   type="checkbox"
-                  className="outline-none   text-white bg-[#ffffff00] "
-                  placeholder=""
+                  name="agreePrivacyPolicy"
+                  checked={checkboxes.agreePrivacyPolicy}
+                  onChange={handleCheckboxChange}
+                  className="outline-none text-white bg-[#ffffff00]"
                 />
               </label>
-              <p className="text-[#32363b]">
+              <p className="text-[#ABB8C4]">
                 I acknowledge that I have reviewed and agree to the privacy
-                policy
+                policy.
               </p>
             </div>
             <button
               onClick={handleVerify}
-              className="w-[58vw] mt-[150px]   p-2 rounded-lg border-[#24AE7C] border gap-[8px] text-[18px]  bg-[#24AE7C] text-white"
+              disabled={!canSubmit}
+              className={`w-[58vw] mt-[150px] p-2 rounded-lg border-[#24AE7C] border gap-[8px] text-[18px] ${
+                canSubmit
+                  ? "bg-[#24AE7C] text-white"
+                  : "bg-[#7b9c90] text-white"
+              }`}
             >
               Submit and continue
             </button>
           </div>
         </div>
-        <img src={sideImg} className="h-[1098px] object-cover " alt="Side" />
+        <img
+          src={sideImg}
+          className="h-[1098px] fixed right-0 top-0 object-cover "
+          alt="Side"
+        />
       </div>
     </div>
   );
