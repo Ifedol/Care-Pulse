@@ -1,4 +1,4 @@
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 const User = require("../models/usermodel");
 const logger = require("../utils/logger");
 
@@ -7,6 +7,18 @@ const findUserByOne = async (field, value) => {
     const query = {};
     query[field] = value;
     const user = await User.findOne(query);
+    return user;
+  } catch (err) {
+    logger.error(err);
+    const error = new Error("Internal Server Error");
+    error.status = 500;
+    throw error;
+  }
+};
+
+const findUserById = async (userId) => {
+  try {
+    const user = await User.findById(userId);
     return user;
   } catch (err) {
     logger.error(err);
@@ -26,7 +38,7 @@ const createUser = async (userData) => {
     logger.error(err);
     const error = new Error("Internal Server Error");
     error.status = 500;
-    throw error;
+    next(err)
   }
 };
 
@@ -46,16 +58,15 @@ const updateUserByOne = async (userId) => {
 
 const createUserOtp = async (userId) => {
     try {
+      console.log(userId)
       const salt = await bcrypt.genSalt(10);
       const newotp = `${Math.floor(100000 + Math.random() * 900000)}`;
+      console.log(newotp)
       const hashedOTP = await bcrypt.hash(newotp, salt);
-      const userOtp = new Otp({
-        userId: userId,
-        otp: hashedOTP,
-        createdat: Date.now(),
-        expiresat: Date.now() + 360000,
-      });
-      await userOtp.save();
+      const user = await User.updateOne({ _id: userId }, { otp: hashedOTP })
+      // const user = findUserById(userId);
+      // user.otp = hashedOTP
+      // await user.save();
       return newotp;
     } catch (err) {
       logger.info(err.message);

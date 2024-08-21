@@ -4,42 +4,49 @@ const schema = require("../schema/validationschema");
 const adminController = require("../controllers/adminController");
 const adminrouter = express.Router();
 const middleware = require("../utils/middleware");
+const upload = require("../utils/cloudinary");
 
 
 
-adminrouter.post(
-  "/signup",
-  validate(schema.signupSchema, "body"),
-  adminController.signup
+adminrouter.get(
+  "/",
+  middleware.verifyToken,
+  adminController.appointmentGet
 );
 
 
 adminrouter.post(
   "/login", 
-  validate(schema.loginSchema), 
-  adminController.login
+  validate(schema.verifyOTPSchema), 
+  adminController.verify
 );
 
 
 adminrouter.post(
-  "/setup",
-  validate(schema.timeSchema),
-  middleware.verifyToken,
-  adminController.setup
+    "/appointment/sheculde",
+    middleware.verifyToken,
+    adminController.approveAppointment
 );
 
+
+adminrouter.post(
+    "/doctor",
+    middleware.verifyToken,
+    upload.single("profilePicture"),
+    adminController.addDoctor
+);
 
 adminrouter.get(
-  "/personalinfo",
+  "/doctor",
   middleware.verifyToken,
-  adminController.personalinfo
+  adminController.doctorGet
 );
 
 
 adminrouter.post(
-  "/appointment",
+  "/appointment/cancel",
   middleware.verifyToken,
-  adminController.appointment
+  adminController.cancelAppointment
 );
 
 

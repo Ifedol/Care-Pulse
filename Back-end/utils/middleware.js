@@ -1,7 +1,32 @@
 const logger = require("./logger");
-const config = require(".config");
+const config = require("./config");
 const jwt = require("jsonwebtoken");
-const userServices = require("../services/userService");
+const userServices = require("../services/userServices");
+
+
+
+// const refreshTokenSecret = config.SECRET;
+
+// function generateToken(payload) {
+//     return jwt.sign(payload, secretKey, { expiresIn: '1h' });
+// }
+
+// function generateRefreshToken(payload) {
+//     return jwt.sign(payload, refreshTokenSecret, { expiresIn: '7d' });
+// }
+
+// function refreshToken(oldRefreshToken) {
+//     try {
+//         const decoded = jwt.verify(oldRefreshToken, refreshTokenSecret);
+//         const newToken = generateToken({ id: decoded.id, email: decoded.email });
+//         console.log('New token:', newToken);
+//         return newToken;
+//     } catch (err) {
+//         console.log('Refresh token expired or invalid:', err.message);
+//     }
+// }
+
+
 
 const verifyToken = async (req, res, next) => {
   try {

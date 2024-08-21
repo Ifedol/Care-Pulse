@@ -1,5 +1,8 @@
 const Joi = require("joi");
 
+
+const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+
 const signupSchema = Joi.object({
   fullname: Joi.string().min(3).max(50).required(),
   email: Joi.string().email().required(),
@@ -54,7 +57,7 @@ const setupSchema = Joi.object({
         "Phone number must be a valid international format",
     })
     .required(),
-    primaryPhysician: Joi.string().min(3).max(50).required(),
+    primaryPhysician: Joi.string().min(3).max(50).optional(),
     insuranceProvider: Joi.string().min(3).max(50).required(),
   insurancePolicyNumber: Joi.string()
     .pattern(/^[a-zA-Z0-9]\d{1,14}$/)
@@ -83,9 +86,6 @@ const setupSchema = Joi.object({
     size: Joi.number().max(5000000).required(), // Validate size (e.g., max 5MB)
   }).required(),
 });
-
-
-const datePattern = /^\d{4}-\d{2}-\d{2}$/;
 
 
 const appointmentSchema = Joi.object({

@@ -1,9 +1,10 @@
 const express = require("express");
 const validate = require("../utils/validate");
 const schema = require("../schema/validationschema");
-const userController = require("../controllers/usercontroller");
+const userController = require("../controllers/userController");
 const userrouter = express.Router();
 const middleware = require("../utils/middleware");
+const upload = require("../utils/cloudinary");
 
 
 
@@ -16,22 +17,23 @@ userrouter.post(
 
 userrouter.post(
   "/login", 
-  validate(schema.loginSchema), 
-  userController.login
+  validate(schema.verifyOTPSchema), 
+  userController.verify
 );
 
 
-userrouter.post(
-  "/setup",
-  validate(schema.timeSchema),
-  middleware.verifyToken,
-  userController.setup
-);
+// userrouter.post(
+//   "/setup",
+//   validate(schema.setupSchema),
+//   middleware.verifyToken,
+//   userController.setup
+// );
 
 
 userrouter.get(
   "/personalinfo",
   middleware.verifyToken,
+  upload.single("image"),
   userController.personalinfo
 );
 
@@ -39,7 +41,7 @@ userrouter.get(
 userrouter.post(
   "/appointment",
   middleware.verifyToken,
-  userController.appointment
+  userController.setAppointment
 );
 
 
